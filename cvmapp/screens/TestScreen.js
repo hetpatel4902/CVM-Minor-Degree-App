@@ -14,12 +14,14 @@ import {useAuthContext} from '../src/Context/AuthContext';
 import QuizComponent from '../components/QuizComponent';
 import Foundation from 'react-native-vector-icons/Foundation';
 import {PRIMARY_COLOR1} from '@env';
+import QuizResultComponent from '../components/QuizResultComponent';
 const TestScreen = () => {
   const {tokens} = useAuthContext();
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const [maxTabMistake, setMaxTabMistake] = useState(3);
   const [quiz, setQuiz] = useState([]);
+  const [quizResult, setQuizResult] = useState([]);
   let trying = 2;
   useEffect(() => {
     const trial = () => {
@@ -74,6 +76,7 @@ const TestScreen = () => {
 
   useEffect(() => {
     getQuiz();
+    getQuizResult();
   }, []);
   const getQuiz = async () => {
     const response = await axios.get(
@@ -83,7 +86,17 @@ const TestScreen = () => {
       },
     );
     setQuiz(response.data.data);
-    console.log(response.data.data);
+    // console.log(response.data.data);
+  };
+  const getQuizResult = async () => {
+    const response = await axios.get(
+      `http://elbforcvmu-2038773933.ap-south-1.elb.amazonaws.com/api/v1/student/quiz/attended`,
+      {
+        headers: {Authorization: `Bearer ${tokens}`},
+      },
+    );
+    setQuizResult(response.data.data);
+    console.log('setQuizResult', response.data.data);
   };
 
   // const checkAirplaneMode = () => {
@@ -162,6 +175,38 @@ const TestScreen = () => {
         renderItem={({item}) => <QuizComponent data={item} />}
         keyExtractor={item => item._id}
       />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginHorizontal: 19,
+        }}>
+        <Foundation
+          name="clipboard-notes"
+          color={'#191919'}
+          size={25}
+          style={{marginTop: 0}}
+        />
+        <Text
+          style={{
+            fontFamily: 'Poppins-Medium',
+            fontSize: 17,
+            color: '#191919',
+            marginTop: 7,
+            marginLeft: 10,
+          }}>
+          Quiz Results
+        </Text>
+      </View>
+      <View style={{}}>
+        <FlatList
+          data={quizResult}
+          style={{marginBottom: 70, marginTop: 0, padding: 13}}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item}) => <QuizResultComponent data={item} />}
+          keyExtractor={item => item._id}
+        />
+      </View>
     </ScrollView>
   );
 };

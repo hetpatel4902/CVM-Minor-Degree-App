@@ -5,11 +5,8 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  AppState,
-  BackHandler,
-  Alert,
 } from 'react-native';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Foundation from 'react-native-vector-icons/Foundation';
@@ -17,102 +14,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import {useAuthContext} from '../src/Context/AuthContext';
-import SystemSetting from 'react-native-system-setting';
-import NetInfo from '@react-native-community/netinfo';
-const QuizDetailScreen = () => {
-  //  const {tokens} = useAuthContext();
-  const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
-  const [maxTabMistake, setMaxTabMistake] = useState(3);
-  //  const [quiz, setQuiz] = useState([]);
-  //  const [quizResult, setQuizResult] = useState([]);
-  let trying = 2;
-  useEffect(() => {
-    const trial = () => {
-      if (Platform.OS === 'android') {
-        AppState.addEventListener('blur', () => {
-          console.log('no please');
-        });
-      }
-    };
-    trial();
-    // return () => {
-    //   trial.remove();
-    // };
-  }, []);
-  useEffect(() => {
-    // const blurEventListener = AppState.addEventListener('blur', () => {
-    //   console.log('blur');
-    // });
-    // const focusEventListener = AppState.addEventListener('focus', () => {
-    //   console.log('focus event trigger');
-    // });
-    const subscription = AppState.addEventListener(
-      'change',
-      async nextAppState => {
-        if (
-          appState.current.match(/inactive|background/) &&
-          nextAppState === 'active'
-        ) {
-          console.log('App has come to the foreground!');
-        }
 
-        appState.current = nextAppState;
-        setAppStateVisible(appState.current);
-        if (appState.current == 'background') {
-          trying = trying - 1;
-          setMaxTabMistake(maxTab => maxTab - 1);
-          console.log(trying);
-          if (trying <= 0) {
-            console.log('you are disqualified');
-            setTimeout(async () => await submitQuiz(), 1000);
-            navigation.navigate('TestScreen', {
-              quizID: quizID,
-            });
-          }
-          console.log('inactive');
-        } else if (appState.current === 'active') {
-          console.log('active');
-        }
-      },
-    );
-    return () => {
-      subscription.remove();
-      // clearInterval(timerIntervalId.nt);
-    };
-  }, []);
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert(
-        'Hold on!',
-        'Are you sure you want to go back? Your test will be submitted',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          {
-            text: 'YES',
-            onPress: () => {
-              setTimeout(async () => await submitQuiz(), 1000);
-              navigation.navigate('TestScreen', {
-                quizID: quizID,
-              });
-            },
-          },
-        ],
-      );
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
+const QuizFinalResult = () => {
   const route = useRoute();
   const {width} = useWindowDimensions();
   const {tokens} = useAuthContext();
@@ -621,4 +524,4 @@ const QuizDetailScreen = () => {
   );
 };
 
-export default QuizDetailScreen;
+export default QuizFinalResult;

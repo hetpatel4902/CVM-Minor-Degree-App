@@ -17,6 +17,7 @@ import ResultScreen from '../screens/ResultScreen';
 import MdResult from '../screens/MdResult';
 import AboutUsScreen from '../screens/AboutUsScreen';
 import QuizDetailScreen from '../screens/QuizDetailScreen';
+import QuizFinalResult from '../screens/QuizFinalResult';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -83,6 +84,7 @@ const TestStack = () => {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={TestScreen} name="TestScreen" />
       <Stack.Screen component={QuizDetailScreen} name="QuizDetailScreen" />
+      <Stack.Screen component={QuizFinalResult} name="QuizFinalResult" />
     </Stack.Navigator>
   );
 };

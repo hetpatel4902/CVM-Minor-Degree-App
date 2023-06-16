@@ -337,7 +337,7 @@ const HomeScreen = () => {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginTop: 20,
+                marginTop: 7,
                 marginHorizontal: 17,
               }}
               onPress={() => navigation.navigate('UpdateProfile')}>

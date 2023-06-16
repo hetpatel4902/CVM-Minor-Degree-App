@@ -1,31 +1,35 @@
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, Alert} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const QuizComponent = ({data}) => {
+const QuizResultComponent = ({data}) => {
+  //   console.log('o:', data);
   const navigation = useNavigation();
-  const StoreData = async quizID => {
-    try {
-      const jsonValue = JSON.stringify(data?.questions);
-      await AsyncStorage.setItem(quizID, jsonValue);
-      //  setActive(false);
-      console.log('from async:', data?.questions);
-    } catch (e) {
-      // saving error
-    }
-  };
-  const getData = async () => {
-    let jsonValue = await AsyncStorage.getItem(data?.questions[0]?._id);
-    console.log('check:', jsonValue);
-  };
-  useEffect(() => {
-    getData();
-  }, []);
+  //   const StoreData = async quizID => {
+  //     try {
+  //       const jsonValue = JSON.stringify(data?.questions);
+  //       await AsyncStorage.setItem(quizID, jsonValue);
+  //       //  setActive(false);
+  //       console.log('from async:', data?.questions);
+  //     } catch (e) {
+  //       // saving error
+  //     }
+  //   };
+  //   const getData = async () => {
+  //     let jsonValue = await AsyncStorage.getItem(data?.questions[0]?._id);
+  //     console.log('check:', jsonValue);
+  //   };
+  //   useEffect(() => {
+  //     getData();
+  //   }, []);
   const onPress = async () => {
-    await StoreData(data?.questions[0]?._id);
-    navigation.navigate('QuizDetailScreen', {quizID: data?.questions[0]?._id});
+    // await StoreData(data?.questions[0]?._id);
+    // navigation.navigate('QuizDetailScreen', {
+    //   quizID: data.quiz?._id,
+    // });
+    Alert.alert('Will develop this feature in next iteration😉');
   };
   return (
     <Pressable
@@ -54,7 +58,7 @@ const QuizComponent = ({data}) => {
             color: '#191919',
             fontSize: 15,
           }}>
-          {data?.name}
+          {data.quiz?.name}
         </Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Text
@@ -63,7 +67,7 @@ const QuizComponent = ({data}) => {
               color: '#303030',
               fontSize: 13,
             }}>
-            {data?.totalMarks} Marks
+            {data?.quiz?.totalMarks} Marks
           </Text>
           <Text
             style={{
@@ -72,7 +76,7 @@ const QuizComponent = ({data}) => {
               fontSize: 13,
             }}>
             {' '}
-            {'\u2022'} {data?.questions.length} questions
+            {/* {'\u2022'} {data?.quiz?.questions.length} questions */}
           </Text>
         </View>
 
@@ -82,8 +86,19 @@ const QuizComponent = ({data}) => {
             color: '#505050',
             fontSize: 13,
           }}>
-          Duration: {data?.duration} mins
+          Duration: {data?.quiz?.duration} mins
         </Text>
+      </View>
+      <View style={{flex: 2, alignItems: 'center'}}>
+        <Text
+          style={{
+            fontFamily: 'Poppins-Medium',
+            fontSize: 18,
+            color: '#191919',
+          }}>
+          {data?.marksObtained}
+        </Text>
+        <Text style={{fontFamily: 'Poppins-Regular'}}>Marks</Text>
       </View>
       <View style={{flex: 1, alignItems: 'center'}}>
         <Feather name="chevron-right" color={'#353535'} size={35} />
@@ -92,4 +107,4 @@ const QuizComponent = ({data}) => {
   );
 };
 
-export default QuizComponent;
+export default QuizResultComponent;
