@@ -41,7 +41,7 @@ const SignInScreen = () => {
         const response = await axios.post(
           `http://elbforcvmu-2038773933.ap-south-1.elb.amazonaws.com/api/v1/student/login`,
           {
-            email: changeText,
+            email: changeText.split(' ')[0],
             password: password,
           },
         );
@@ -50,6 +50,7 @@ const SignInScreen = () => {
           userID: response.data.user.id,
           name: response.data.user.name,
         };
+
         const jsonValue = JSON.stringify(obj);
         await AsyncStorage.setItem('userDetail', jsonValue);
         setTokens(response.data.token);

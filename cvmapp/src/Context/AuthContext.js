@@ -20,6 +20,8 @@ const AuthContextProvider = ({children}) => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [trying, setTrying] = useState(3);
+
+  const [choice1, setChoice1] = useState(null);
   let jsonValue;
   useEffect(() => {
     getData();
@@ -63,6 +65,8 @@ const AuthContextProvider = ({children}) => {
         setLoading,
         trying,
         setTrying,
+        choice1,
+        setChoice1,
       }}>
       {children}
       {loginPending ? <AppLoader /> : null}

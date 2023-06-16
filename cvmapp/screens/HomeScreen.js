@@ -7,12 +7,13 @@ import {
   useWindowDimensions,
   Linking,
   Share,
+  FlatList,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {useAuthContext} from '../src/Context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import AppLoader from '../components/AppLoader';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useIsFocused} from '@react-navigation/native';
@@ -22,9 +23,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import Foundation from 'react-native-vector-icons/Foundation';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-
-// import {useNavigation} from '@react-navigation/native';
-// import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AnnouncementComponent from '../components/AnnouncementComponent';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const {width} = useWindowDimensions();
@@ -37,20 +37,17 @@ const HomeScreen = () => {
     setUsers,
     tokens,
     setUser,
-    // trying,
-    // setTrying,
   } = useAuthContext();
-
+  const route = useRoute();
+  const subject = route?.params?.subject;
   const [data, setData] = useState([]);
   const [featuredData, setFeaturedData] = useState([]);
   const [nearByPg, setNearByPgData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [nearByMess, setNearByMessData] = useState([]);
-  const [status, setStatus] = useState(true);
   const [airplaneMode, setAirplaneMode] = useState(false);
   const [studentDetail, setStudentDetail] = useState(null);
-  // const [timer, setTimer] = useState(10);
+  const [announcement, setAnnouncement] = useState([]);
   let jsonValue;
   const getDatas = async () => {
     const value = await AsyncStorage.getItem('userDetail');
@@ -77,21 +74,33 @@ const HomeScreen = () => {
     setStudentDetail(response.data.data);
     console.log(response.data.data);
   };
+  const getAnnouncements = async () => {
+    const response = await axios.get(
+      `http://elbforcvmu-2038773933.ap-south-1.elb.amazonaws.com/api/v1/student/notifications?type=Announcement`,
+      {
+        headers: {Authorization: `Bearer ${jsonValue.token}`},
+      },
+    );
+    setAnnouncement(response.data.data);
+    console.log(response.data);
+  };
+  const goToChoiceFilling = () => {
+    if (studentDetail?.isChoiceFilled) {
+      navigation.navigate('ResultScreen');
+    } else {
+      navigation.navigate('ChoiceFilling');
+    }
+  };
+  const goToMdResult = () => {
+    navigation.navigate('MdResult', {semester: studentDetail?.semester});
+  };
 
   useEffect(() => {
     getDatas();
-    // getStudentDetails();
     setTimeout(() => getStudentDetails(), 100);
+    setTimeout(() => getAnnouncements(), 110);
   }, []);
 
-  // const onRefresh = useCallback(() => {
-  //   setRefreshing(true);
-  //   if (location) {
-  //   }
-  //   setTimeout(() => {
-  //     setRefreshing(false);
-  //   }, 2000);
-  // }, []);
   const onRate = () => {
     Linking.openURL(
       'https://play.google.com/store/apps/details?id=com.ssip.governmentsachivalay',
@@ -157,7 +166,7 @@ const HomeScreen = () => {
                   borderRadius: 34,
                   alignSelf: 'center',
                   alignItems: 'center',
-                  marginTop: 18,
+                  marginTop: 10,
                 }}>
                 <FontAwesome5
                   name="user-alt"
@@ -214,7 +223,7 @@ const HomeScreen = () => {
             <LinearGradient
               colors={['#fa7d8e', '#f22440']}
               style={{
-                height: 120,
+                height: 130,
                 margin: 10,
                 marginHorizontal: 17,
                 borderRadius: 18,
@@ -225,93 +234,114 @@ const HomeScreen = () => {
                   alignItems: 'center',
                   alignContent: 'center',
                   justifyContent: 'center',
-                  marginTop: 7,
+                  marginTop: 12,
                 }}>
                 <Text
                   style={{
                     color: 'white',
                     fontFamily: 'Poppins-Medium',
-                    fontSize: 14,
+                    fontSize: 15,
                     marginHorizontal: 8,
                   }}>
                   Announcement
                 </Text>
+
                 <FontAwesome5 name="bullhorn" color={'white'} size={16} />
               </View>
+              <FlatList
+                data={announcement}
+                style={{marginTop: 0, paddingHorizontal: 15}}
+                showsVerticalScrollIndicator={false}
+                renderItem={({item}) => <AnnouncementComponent data={item} />}
+                keyExtractor={item => item._id}
+              />
             </LinearGradient>
             <View
               style={{height: 200, flexDirection: 'row', alignItems: 'center'}}>
-              <LinearGradient
-                colors={['#87cefa', '#22a0f0']}
+              <Pressable
+                onPress={goToChoiceFilling}
                 style={{
                   flex: 1,
-                  height: 160,
+                  height: 180,
                   marginLeft: 17,
                   marginRight: 10,
-                  borderRadius: 18,
                 }}>
-                <Foundation
-                  name={
-                    studentDetail?.isChoiceFilled
-                      ? 'clipboard-notes'
-                      : 'clipboard-pencil'
-                  }
-                  color={'white'}
-                  size={38}
-                  style={{alignSelf: 'center', marginTop: 24}}
-                />
-                <Text
+                <LinearGradient
+                  colors={['#87cefa', '#22a0f0']}
                   style={{
-                    color: 'white',
-                    fontFamily: 'Poppins-Medium',
-                    fontSize: 17,
-                    marginHorizontal: 8,
-                    textAlign: 'center',
-                    marginTop: 15,
+                    height: 180,
+                    borderRadius: 18,
                   }}>
-                  {studentDetail?.isChoiceFilled
-                    ? 'Choice Filling Result'
-                    : 'Choice Filling Pending'}
-                </Text>
-              </LinearGradient>
-
-              <LinearGradient
-                colors={['#f7c577', '#FB9D0A']}
+                  <Foundation
+                    name={
+                      studentDetail?.isChoiceFilled
+                        ? 'clipboard-notes'
+                        : 'clipboard-pencil'
+                    }
+                    color={'white'}
+                    size={38}
+                    style={{alignSelf: 'center', marginTop: 30}}
+                  />
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: 'Poppins-Medium',
+                      fontSize: 17,
+                      marginHorizontal: 8,
+                      textAlign: 'center',
+                      marginTop: 15,
+                    }}>
+                    {subject
+                      ? subject
+                      : studentDetail?.isChoiceFilled
+                      ? 'Choice Filling Result'
+                      : 'Choice Filling Pending'}
+                  </Text>
+                </LinearGradient>
+              </Pressable>
+              <Pressable
+                onPress={goToMdResult}
                 style={{
                   flex: 1,
-                  height: 160,
-                  marginLeft: 10,
+                  height: 180,
                   marginRight: 17,
-                  borderRadius: 18,
+                  marginLeft: 10,
                 }}>
-                <AntDesign
-                  name="filetext1"
-                  color={'white'}
-                  size={38}
-                  style={{alignSelf: 'center', marginTop: 24}}
-                />
-                <Text
+                <LinearGradient
+                  colors={['#f7c577', '#FB9D0A']}
                   style={{
-                    color: 'white',
-                    fontFamily: 'Poppins-Medium',
-                    fontSize: 17,
-                    marginHorizontal: 8,
-                    textAlign: 'center',
-                    marginTop: 15,
+                    height: 180,
+                    borderRadius: 18,
                   }}>
-                  Semester {studentDetail?.semester} Result
-                </Text>
-              </LinearGradient>
+                  <AntDesign
+                    name="filetext1"
+                    color={'white'}
+                    size={38}
+                    style={{alignSelf: 'center', marginTop: 30}}
+                  />
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontFamily: 'Poppins-Medium',
+                      fontSize: 17,
+                      marginHorizontal: 8,
+                      textAlign: 'center',
+                      marginTop: 15,
+                    }}>
+                    Semester {studentDetail?.semester} Result
+                  </Text>
+                </LinearGradient>
+              </Pressable>
             </View>
             <Pressable
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                marginTop: 9,
-                marginHorizontal: 15,
+                marginTop: 20,
+                marginHorizontal: 17,
               }}
               onPress={() => navigation.navigate('UpdateProfile')}>
-              <FontAwesome5 name="user-edit" size={15} color={PRIMARY_COLOR1} />
+              <FontAwesome5 name="user-edit" size={18} color={PRIMARY_COLOR1} />
               <Text
                 style={{
                   fontSize: 14,
@@ -330,9 +360,9 @@ const HomeScreen = () => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginTop: 9,
-                marginHorizontal: 13,
+                marginHorizontal: 17,
               }}>
-              <FontAwesome name="share" size={17} color={PRIMARY_COLOR1} />
+              <FontAwesome name="share" size={19} color={PRIMARY_COLOR1} />
               <Text
                 style={{
                   fontSize: 14,
@@ -346,14 +376,40 @@ const HomeScreen = () => {
               </Text>
             </Pressable>
             <Pressable
+              onPress={() => navigation.navigate('AboutUsScreen')}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 9,
+                marginHorizontal: 14,
+              }}>
+              <Ionicons
+                name="information-circle-outline"
+                size={25}
+                color={PRIMARY_COLOR1}
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#4d4d4d',
+                  marginBottom: 7,
+                  marginTop: 8,
+                  marginHorizontal: 7,
+                  fontFamily: 'Poppins-Regular',
+                }}>
+                About Developers
+              </Text>
+            </Pressable>
+            <Pressable
               onPress={onRate}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginTop: 9,
-                marginHorizontal: 13,
+                marginHorizontal: 17,
+                marginBottom: 20,
               }}>
-              <FontAwesome name="star" size={17} color={PRIMARY_COLOR1} />
+              <FontAwesome name="star" size={19} color={PRIMARY_COLOR1} />
               <Text
                 style={{
                   fontSize: 14,
@@ -366,61 +422,42 @@ const HomeScreen = () => {
                 Rate us on PlayStore
               </Text>
             </Pressable>
-            {/* <Pressable
-              onPress={logout}
-              style={{
-                alignContent: 'center',
-                alignSelf: 'center',
-                marginTop: 40,
-                backgroundColor: PRIMARY_COLOR2,
-                paddingVertical: 9,
-                borderRadius: 13,
-                width: width - 48,
-                marginBottom: 70,
-              }}>
-              <Text
+            <Pressable onPress={logout}>
+              <LinearGradient
+                colors={['#f7c577', '#FB9D0A']}
                 style={{
-                  color: 'white',
+                  // flex: 1,
+                  alignContent: 'center',
                   alignSelf: 'center',
-                  fontFamily: 'Poppins-SemiBold',
-                  fontSize: 14,
+                  marginTop: 20,
+                  // backgroundColor: PRIMARY_COLOR2,
+                  paddingVertical: 9,
+                  borderRadius: 13,
+                  width: width - 48,
+                  marginBottom: 70,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}>
-                Logout
-              </Text>
-            </Pressable> */}
-            <LinearGradient
-              colors={['#f7c577', '#FB9D0A']}
-              style={{
-                alignContent: 'center',
-                alignSelf: 'center',
-                marginTop: 40,
-                backgroundColor: PRIMARY_COLOR2,
-                paddingVertical: 9,
-                borderRadius: 13,
-                width: width - 48,
-                marginBottom: 70,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  alignSelf: 'center',
-                  fontFamily: 'Poppins-SemiBold',
-                  fontSize: 15,
-                  // marginVertical: 1,
-                  marginRight: 5,
-                }}>
-                Logout
-              </Text>
-              <MaterialIcons
-                name="logout"
-                color={'white'}
-                size={21}
-                style={{alignSelf: 'center'}}
-              />
-            </LinearGradient>
+                <Text
+                  style={{
+                    color: 'white',
+                    alignSelf: 'center',
+                    fontFamily: 'Poppins-SemiBold',
+                    fontSize: 15,
+                    // marginVertical: 1,
+                    marginRight: 5,
+                  }}>
+                  Logout
+                </Text>
+                <MaterialIcons
+                  name="logout"
+                  color={'white'}
+                  size={21}
+                  style={{alignSelf: 'center'}}
+                />
+              </LinearGradient>
+            </Pressable>
           </View>
         </View>
       </ScrollView>

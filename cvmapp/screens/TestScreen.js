@@ -1,11 +1,25 @@
-import {View, Text, AppState, Platform} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  AppState,
+  Platform,
+  ScrollView,
+  FlatList,
+} from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
 import SystemSetting from 'react-native-system-setting';
 import NetInfo from '@react-native-community/netinfo';
+import axios from 'axios';
+import {useAuthContext} from '../src/Context/AuthContext';
+import QuizComponent from '../components/QuizComponent';
+import Foundation from 'react-native-vector-icons/Foundation';
+import {PRIMARY_COLOR1} from '@env';
 const TestScreen = () => {
+  const {tokens} = useAuthContext();
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
   const [maxTabMistake, setMaxTabMistake] = useState(3);
+  const [quiz, setQuiz] = useState([]);
   let trying = 2;
   useEffect(() => {
     const trial = () => {
@@ -58,6 +72,20 @@ const TestScreen = () => {
     };
   }, []);
 
+  useEffect(() => {
+    getQuiz();
+  }, []);
+  const getQuiz = async () => {
+    const response = await axios.get(
+      `http://elbforcvmu-2038773933.ap-south-1.elb.amazonaws.com/api/v1/student/quiz`,
+      {
+        headers: {Authorization: `Bearer ${tokens}`},
+      },
+    );
+    setQuiz(response.data.data);
+    console.log(response.data.data);
+  };
+
   // const checkAirplaneMode = () => {
   //   // if (state.isConnected || state.isInternetReachable) {
   //   NetInfo.fetch().then(state => {
@@ -99,9 +127,42 @@ const TestScreen = () => {
   // }, []);
 
   return (
-    <View>
-      <Text>TestScreen</Text>
-    </View>
+    <ScrollView
+      style={{backgroundColor: 'white'}}
+      showsVerticalScrollIndicator={false}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: '#1A82C4',
+          paddingVertical: 12,
+          paddingHorizontal: 18,
+        }}>
+        <Foundation
+          name="clipboard-pencil"
+          color={'white'}
+          size={25}
+          style={{marginTop: 0}}
+        />
+        <Text
+          style={{
+            fontFamily: 'Poppins-Medium',
+            fontSize: 17,
+            color: 'white',
+            marginTop: 7,
+            marginLeft: 10,
+          }}>
+          Quiz
+        </Text>
+      </View>
+      <FlatList
+        data={quiz}
+        style={{marginBottom: 10, marginTop: 0, padding: 13}}
+        showsVerticalScrollIndicator={false}
+        renderItem={({item}) => <QuizComponent data={item} />}
+        keyExtractor={item => item._id}
+      />
+    </ScrollView>
   );
 };
 

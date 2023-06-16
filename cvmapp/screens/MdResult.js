@@ -6,8 +6,7 @@ import {useAuthContext} from '../src/Context/AuthContext';
 import {useRoute} from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ResultComponent from '../components/ResultComponent';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-const MaterialScreen = () => {
+const MdResult = () => {
   const [result, setResult] = useState(null);
   const {tokens} = useAuthContext();
   const route = useRoute();
@@ -17,7 +16,7 @@ const MaterialScreen = () => {
   }, []);
   const getAnnouncements = async () => {
     const response = await axios.get(
-      `http://elbforcvmu-2038773933.ap-south-1.elb.amazonaws.com/api/v1/student/notifications?type=Material`,
+      `http://elbforcvmu-2038773933.ap-south-1.elb.amazonaws.com/api/v1/student/notifications?type=Result`,
       {
         headers: {Authorization: `Bearer ${tokens}`},
       },
@@ -39,7 +38,7 @@ const MaterialScreen = () => {
           paddingVertical: 12,
           paddingHorizontal: 18,
         }}>
-        <FontAwesome name="book" size={25} color={'white'} />
+        <AntDesign name="filetext1" size={24} color={'white'} />
         <Text
           style={{
             fontFamily: 'Poppins-Medium',
@@ -48,12 +47,22 @@ const MaterialScreen = () => {
             marginTop: 7,
             marginLeft: 9,
           }}>
-          Material
+          Semester {semester} Result :
         </Text>
       </View>
+      <Text
+        style={{
+          fontFamily: 'Poppins-Medium',
+          fontSize: 15,
+          color: '#404040',
+          marginTop: 20,
+          marginHorizontal: 13,
+        }}>
+        Best of Luck!👍
+      </Text>
       <FlatList
         data={result}
-        style={{marginBottom: 10, marginTop: 0, paddingHorizontal: 13}}
+        style={{marginBottom: 10, marginTop: 0, marginHorizontal: 13}}
         showsVerticalScrollIndicator={false}
         renderItem={({item}) => <ResultComponent data={item} />}
         keyExtractor={item => item._id}
@@ -63,4 +72,4 @@ const MaterialScreen = () => {
   );
 };
 
-export default MaterialScreen;
+export default MdResult;

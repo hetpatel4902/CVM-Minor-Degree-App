@@ -12,6 +12,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import UpdateProfile from '../screens/ProfileScreen/UpdateProfile';
+import ChoiceFilling from '../screens/ChoiceFilling';
+import ResultScreen from '../screens/ResultScreen';
+import MdResult from '../screens/MdResult';
+import AboutUsScreen from '../screens/AboutUsScreen';
+import QuizDetailScreen from '../screens/QuizDetailScreen';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -23,9 +28,9 @@ const BottomTabNav = () => {
         tabBarActiveTintColor: '#1A82C4',
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          height: 48,
+          height: 53,
           position: 'absolute',
-          bottom: 7,
+          // bottom: 7,
           right: 7,
           left: 7,
           borderRadius: 13,
@@ -77,6 +82,7 @@ const TestStack = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={TestScreen} name="TestScreen" />
+      <Stack.Screen component={QuizDetailScreen} name="QuizDetailScreen" />
     </Stack.Navigator>
   );
 };
@@ -95,6 +101,10 @@ const HomeStack = () => {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={HomeScreen} name="HomeScreen" />
       <Stack.Screen component={UpdateProfile} name="UpdateProfile" />
+      <Stack.Screen component={ChoiceFilling} name="ChoiceFilling" />
+      <Stack.Screen component={ResultScreen} name="ResultScreen" />
+      <Stack.Screen component={MdResult} name="MdResult" />
+      <Stack.Screen component={AboutUsScreen} name="AboutUsScreen" />
     </Stack.Navigator>
   );
 };
