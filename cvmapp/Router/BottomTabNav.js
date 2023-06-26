@@ -1,5 +1,5 @@
 import {View, Text} from 'react-native';
-import React from 'react';
+import React, {useLayoutEffect} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -18,6 +18,7 @@ import MdResult from '../screens/MdResult';
 import AboutUsScreen from '../screens/AboutUsScreen';
 import QuizDetailScreen from '../screens/QuizDetailScreen';
 import QuizFinalResult from '../screens/QuizFinalResult';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const BottomTabNav = () => {
@@ -42,7 +43,9 @@ const BottomTabNav = () => {
         component={HomeStack}
         name="Home"
         options={{
+          unmountOnBlur: true,
           headerShown: false,
+          // tabBarAccessibilityLabel: 'homeTab',
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
             <Ionicons name="home" size={18.5} color={color} />
@@ -55,6 +58,7 @@ const BottomTabNav = () => {
         options={{
           unmountOnBlur: true,
           headerShown: false,
+          // tabBarVisible: false,
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
             <Ionicons name="newspaper" size={18.5} color={color} />
@@ -67,6 +71,7 @@ const BottomTabNav = () => {
         options={{
           unmountOnBlur: true,
           headerShown: false,
+          // tabBarAccessibilityLabel: 'materialTab',
           tabBarLabelStyle: {marginTop: -8, marginBottom: 2, fontSize: 9},
           tabBarIcon: ({color}) => (
             <Octicons name="file-directory" size={18} color={color} />
@@ -79,11 +84,28 @@ const BottomTabNav = () => {
 
 export default BottomTabNav;
 
-const TestStack = () => {
+const TestStack = ({navigation, route}) => {
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+
+    if (routeName === 'QuizDetailScreen') {
+      navigation.setOptions({
+        tabBarStyle: {display: 'none'},
+      });
+    } else {
+      navigation.setOptions({
+        tabBarStyle: {display: 'flex'},
+      });
+    }
+  }, [navigation, route]);
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen component={TestScreen} name="TestScreen" />
-      <Stack.Screen component={QuizDetailScreen} name="QuizDetailScreen" />
+      <Stack.Screen
+        component={QuizDetailScreen}
+        name="QuizDetailScreen"
+        options={{tabBarStyle: {display: 'none'}}}
+      />
       <Stack.Screen component={QuizFinalResult} name="QuizFinalResult" />
     </Stack.Navigator>
   );

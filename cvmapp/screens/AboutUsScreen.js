@@ -31,7 +31,7 @@ const AboutUsScreen = () => {
           justifyContent: 'center',
           // marginBottom: 10,
           backgroundColor: PRIMARY_COLOR1,
-          paddingVertical: 12,
+          paddingVertical: 10,
         }}>
         <FontAwesome5
           name="users"

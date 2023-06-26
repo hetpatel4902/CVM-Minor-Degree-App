@@ -35,7 +35,7 @@ const MdResult = () => {
           flexDirection: 'row',
           alignItems: 'center',
           backgroundColor: '#1A82C4',
-          paddingVertical: 12,
+          paddingVertical: 10,
           paddingHorizontal: 18,
         }}>
         <AntDesign name="filetext1" size={24} color={'white'} />

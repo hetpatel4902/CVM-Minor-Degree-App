@@ -115,7 +115,7 @@ const UpdateProfile = () => {
               flexDirection: 'row',
               alignItems: 'center',
               backgroundColor: PRIMARY_COLOR1,
-              paddingVertical: 12,
+              paddingVertical: 10,
               paddingHorizontal: 18,
               //   justifyContent: 'center',
             }}>

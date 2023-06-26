@@ -31,7 +31,7 @@ const ResultScreen = () => {
             flexDirection: 'row',
             alignItems: 'center',
             paddingHorizontal: 18,
-            paddingVertical: 12,
+            paddingVertical: 10,
             backgroundColor: '#1A82C4',
           }}>
           <Foundation name="clipboard-notes" size={24} color={'white'} />

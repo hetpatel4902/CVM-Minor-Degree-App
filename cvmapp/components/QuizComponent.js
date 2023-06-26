@@ -1,4 +1,4 @@
-import {View, Text, Pressable} from 'react-native';
+import {View, Text, Pressable, Alert} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -25,7 +25,25 @@ const QuizComponent = ({data}) => {
   }, []);
   const onPress = async () => {
     await StoreData(data?.questions[0]?._id);
-    navigation.navigate('QuizDetailScreen', {quizID: data?.questions[0]?._id});
+    Alert.alert(
+      'Quiz Rules!',
+      `You can't click the back/home/tab button or you can't drag notifications, if you did for so,more than 2 times than quiz will be auto submitted.`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {
+          text: 'YES',
+          onPress: () => {
+            navigation.navigate('QuizDetailScreen', {
+              quizID: data?.questions[0]?._id,
+            });
+          },
+        },
+      ],
+    );
   };
   return (
     <Pressable

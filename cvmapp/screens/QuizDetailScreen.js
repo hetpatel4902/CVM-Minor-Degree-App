@@ -8,9 +8,10 @@ import {
   AppState,
   BackHandler,
   Alert,
+  AccessibilityInfo,
 } from 'react-native';
 import React, {useState, useEffect, useRef} from 'react';
-import {useRoute, useNavigation} from '@react-navigation/native';
+import {useRoute, useNavigation, StackActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Foundation from 'react-native-vector-icons/Foundation';
 import LinearGradient from 'react-native-linear-gradient';
@@ -23,15 +24,32 @@ const QuizDetailScreen = () => {
   //  const {tokens} = useAuthContext();
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
-  const [maxTabMistake, setMaxTabMistake] = useState(3);
+  const [maxTabMistake, setMaxTabMistake] = useState(7);
   //  const [quiz, setQuiz] = useState([]);
   //  const [quizResult, setQuizResult] = useState([]);
-  let trying = 2;
+  let trying = 7;
   useEffect(() => {
     const trial = () => {
       if (Platform.OS === 'android') {
         AppState.addEventListener('blur', () => {
-          console.log('no please');
+          // console.log('no please');
+
+          // Alert.alert(
+          //   `⚠ Please don't do this! ⚠`,
+          //   `Your Quiz will be submitted after ${
+          //     trying + 1
+          //   } more such instances`,
+          // );
+          if (trying <= 0) {
+            // console.log('you are disqualified');
+            setTimeout(async () => await submitQuiz(), 1000);
+            // navigation.navigate('TestScreen');
+            navigation.dispatch(
+              StackActions.replace('TestScreen', {quizID: quizID}),
+            );
+          }
+          trying = trying - 1;
+          setMaxTabMistake(maxTab => maxTab - 1);
         });
       }
     };
@@ -40,6 +58,18 @@ const QuizDetailScreen = () => {
     //   trial.remove();
     // };
   }, []);
+  // useEffect(() => {
+  //   disableTabNavigation('homeTab');
+  // }, []);
+
+  // const disableTabNavigation = async currentTab => {
+  //   const isEnabled = await AccessibilityInfo.isScreenReaderEnabled();
+  //   if (isEnabled) {
+  //     AccessibilityInfo.setAccessibilityFocus(-1); // Disables navigation for all tabs
+  //     AccessibilityInfo.setAccessibilityFocus(currentTab); // Enables navigation for the current tab
+  //   }
+  // };
+
   useEffect(() => {
     // const blurEventListener = AppState.addEventListener('blur', () => {
     //   console.log('blur');
@@ -55,21 +85,30 @@ const QuizDetailScreen = () => {
           nextAppState === 'active'
         ) {
           console.log('App has come to the foreground!');
+          Alert.alert(
+            `⚠ Please don't do this! ⚠`,
+            `Your Quiz will be submitted after ${trying} more such instances`,
+          );
         }
 
         appState.current = nextAppState;
         setAppStateVisible(appState.current);
         if (appState.current == 'background') {
+          if (trying <= 0) {
+            // console.log('you are disqualified');
+            setTimeout(async () => await submitQuiz(), 500);
+            // navigation.navigate('TestScreen', {
+            //   quizID: quizID,
+            // });
+            navigation.dispatch(
+              StackActions.replace('TestScreen', {quizID: quizID}),
+            );
+          }
           trying = trying - 1;
           setMaxTabMistake(maxTab => maxTab - 1);
           console.log(trying);
-          if (trying <= 0) {
-            console.log('you are disqualified');
-            setTimeout(async () => await submitQuiz(), 1000);
-            navigation.navigate('TestScreen', {
-              quizID: quizID,
-            });
-          }
+          // console.log(trying);
+
           console.log('inactive');
         } else if (appState.current === 'active') {
           console.log('active');
@@ -95,7 +134,7 @@ const QuizDetailScreen = () => {
           {
             text: 'YES',
             onPress: () => {
-              setTimeout(async () => await submitQuiz(), 1000);
+              setTimeout(async () => await submitQuiz(), 500);
               navigation.navigate('TestScreen', {
                 quizID: quizID,
               });
@@ -314,6 +353,10 @@ const QuizDetailScreen = () => {
       setOptionsc(false);
       setOptionsd(true);
     } else {
+      setOptionsa(false);
+      setOptionsb(false);
+      setOptionsc(false);
+      setOptionsd(false);
       // console.log(j);
       // console.log(j.studentChoice);
       // console.log('error');
@@ -355,17 +398,35 @@ const QuizDetailScreen = () => {
         </Text>
       </View>
       <View style={{marginHorizontal: 13}}>
-        <Text
+        <View
           style={{
-            fontFamily: 'Poppins-Medium',
-            fontSize: 17,
-            color: '#252525',
-            marginTop: 7,
-            // marginHorizontal: 13,
-            // marginLeft: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
           }}>
-          Question No: {questionIndex}
-        </Text>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Medium',
+              fontSize: 17,
+              color: '#252525',
+              marginTop: 7,
+              // marginHorizontal: 13,
+              // marginLeft: 10,
+            }}>
+            Question No: {questionIndex}
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'Poppins-Medium',
+              fontSize: 13,
+              color: '#252525',
+              marginTop: 7,
+              // marginHorizontal: 13,
+              // marginLeft: 10,
+            }}>
+            ⚠ Warning: {maxTabMistake + 1}
+          </Text>
+        </View>
         {question?.imgUrl && (
           <Image
             source={{uri: question?.imgUrl}}
@@ -613,9 +674,9 @@ const QuizDetailScreen = () => {
           Finish
         </Text>
       </Pressable> */}
-        <Pressable onPress={() => navigation.goBack()} style={{marginTop: 100}}>
+        {/* <Pressable onPress={() => navigation.goBack()} style={{marginTop: 100}}>
           <Text>go back</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </ScrollView>
   );

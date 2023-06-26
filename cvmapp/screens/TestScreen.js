@@ -22,57 +22,60 @@ const TestScreen = () => {
   const [maxTabMistake, setMaxTabMistake] = useState(3);
   const [quiz, setQuiz] = useState([]);
   const [quizResult, setQuizResult] = useState([]);
-  let trying = 2;
-  useEffect(() => {
-    const trial = () => {
-      if (Platform.OS === 'android') {
-        AppState.addEventListener('blur', () => {
-          console.log('no please');
-        });
-      }
-    };
-    trial();
-    // return () => {
-    //   trial.remove();
-    // };
-  }, []);
-  useEffect(() => {
-    // const blurEventListener = AppState.addEventListener('blur', () => {
-    //   console.log('blur');
-    // });
-    // const focusEventListener = AppState.addEventListener('focus', () => {
-    //   console.log('focus event trigger');
-    // });
-    const subscription = AppState.addEventListener(
-      'change',
-      async nextAppState => {
-        if (
-          appState.current.match(/inactive|background/) &&
-          nextAppState === 'active'
-        ) {
-          console.log('App has come to the foreground!');
-        }
+  // let trying = 6;
+  // useEffect(() => {
+  //   const trial = () => {
+  //     if (Platform.OS === 'android') {
+  //       AppState.addEventListener('blur', () => {
+  //         // console.log('no please');
+  //         trying = trying - 1;
+  //         setMaxTabMistake(maxTab => maxTab - 1);
+  //         console.log(trying);
+  //       });
+  //     }
+  //   };
+  //   trial();
+  //   // return () => {
+  //   //   trial.remove();
+  //   // };
+  // }, []);
+  // useEffect(() => {
+  //   // const blurEventListener = AppState.addEventListener('blur', () => {
+  //   //   console.log('blur');
+  //   // });
+  //   // const focusEventListener = AppState.addEventListener('focus', () => {
+  //   //   console.log('focus event trigger');
+  //   // });
+  //   const subscription = AppState.addEventListener(
+  //     'change',
+  //     async nextAppState => {
+  //       if (
+  //         appState.current.match(/inactive|background/) &&
+  //         nextAppState === 'active'
+  //       ) {
+  //         console.log('App has come to the foreground!');
+  //       }
 
-        appState.current = nextAppState;
-        setAppStateVisible(appState.current);
-        if (appState.current == 'background') {
-          trying = trying - 1;
-          setMaxTabMistake(maxTab => maxTab - 1);
-          console.log(trying);
-          if (trying <= 0) {
-            console.log('you are disqualified');
-          }
-          console.log('inactive');
-        } else if (appState.current === 'active') {
-          console.log('active');
-        }
-      },
-    );
-    return () => {
-      subscription.remove();
-      // clearInterval(timerIntervalId.nt);
-    };
-  }, []);
+  //       appState.current = nextAppState;
+  //       setAppStateVisible(appState.current);
+  //       if (appState.current == 'background') {
+  //         trying = trying - 1;
+  //         setMaxTabMistake(maxTab => maxTab - 1);
+  //         console.log(trying);
+  //         if (trying <= 0) {
+  //           console.log('you are disqualified');
+  //         }
+  //         console.log('inactive');
+  //       } else if (appState.current === 'active') {
+  //         console.log('active');
+  //       }
+  //     },
+  //   );
+  //   return () => {
+  //     subscription.remove();
+  //     // clearInterval(timerIntervalId.nt);
+  //   };
+  // }, []);
 
   useEffect(() => {
     getQuiz();
@@ -148,7 +151,7 @@ const TestScreen = () => {
           flexDirection: 'row',
           alignItems: 'center',
           backgroundColor: '#1A82C4',
-          paddingVertical: 12,
+          paddingVertical: 10,
           paddingHorizontal: 18,
         }}>
         <Foundation
@@ -168,18 +171,20 @@ const TestScreen = () => {
           Quiz
         </Text>
       </View>
-      <FlatList
-        data={quiz}
-        style={{marginBottom: 10, marginTop: 0, padding: 13}}
-        showsVerticalScrollIndicator={false}
-        renderItem={({item}) => <QuizComponent data={item} />}
-        keyExtractor={item => item._id}
-      />
+      {quiz && (
+        <FlatList
+          data={quiz}
+          style={{marginBottom: 10, marginTop: 0, padding: 13}}
+          showsVerticalScrollIndicator={false}
+          renderItem={({item}) => <QuizComponent data={item} />}
+          keyExtractor={item => item._id}
+        />
+      )}
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          marginHorizontal: 19,
+          marginHorizontal: 15,
         }}>
         <Foundation
           name="clipboard-notes"
@@ -192,7 +197,7 @@ const TestScreen = () => {
             fontFamily: 'Poppins-Medium',
             fontSize: 17,
             color: '#191919',
-            marginTop: 7,
+            marginTop: 5,
             marginLeft: 10,
           }}>
           Quiz Results
@@ -201,7 +206,7 @@ const TestScreen = () => {
       <View style={{}}>
         <FlatList
           data={quizResult}
-          style={{marginBottom: 70, marginTop: 0, padding: 13}}
+          style={{marginBottom: 70, marginTop: 0, padding: 9}}
           showsVerticalScrollIndicator={false}
           renderItem={({item}) => <QuizResultComponent data={item} />}
           keyExtractor={item => item._id}

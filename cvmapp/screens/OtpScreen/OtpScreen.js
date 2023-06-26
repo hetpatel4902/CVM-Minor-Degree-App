@@ -94,7 +94,7 @@ const OtpScreen = () => {
               fontFamily: 'Poppins-Medium',
               color: 'grey',
             }}>
-            A 4-digit code has been sent to your Phone No.
+            A 4-digit code has been sent to your Email ID
           </Text>
           <SafeAreaView style={styles.root}>
             {/* <Text style={styles.e}>Verification</Text> */}

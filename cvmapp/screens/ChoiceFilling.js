@@ -8,7 +8,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute, StackActions} from '@react-navigation/native';
 import {useAuthContext} from '../src/Context/AuthContext';
 import axios from 'axios';
 import ChoiceFillingComponent from '../components/ChoiceFillingComponent';
@@ -88,7 +88,8 @@ const ChoiceFilling = () => {
     );
     if (response.data.res == 'success') {
       await showToastWithGravityAndOffset();
-      navigation.navigate('HomeScreen', {subject: 'Choice Filling Result'});
+      navigation.dispatch(StackActions.replace('HomeScreen'));
+      // navigation.navigate('HomeScreen', {subject: 'Choice Filling Result'});
     }
     console.log(response.data.res);
   };

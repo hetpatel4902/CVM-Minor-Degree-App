@@ -14,8 +14,10 @@ import axios from 'axios';
 import {AUTH_IP} from '@env';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SearchLoader from '../../components/SearchLoader';
+import {useAuthContext} from '../../src/Context/AuthContext';
 
 const ForgotPasswordScreen = () => {
+  const {setLoginPending} = useAuthContext();
   const width = Dimensions.get('window').width;
   const navigation = useNavigation();
   const [check, setCheck] = useState(false);
@@ -24,16 +26,16 @@ const ForgotPasswordScreen = () => {
   const onSendPressed = async data => {
     setCheck(false);
     try {
-      setLoading(true);
+      setLoginPending(true);
       const response = await axios.patch(
         `http://elbforcvmu-2038773933.ap-south-1.elb.amazonaws.com/api/v1/student/forgotpassword`,
         {email: email},
       );
       navigation.navigate('ConfirmEmail', {email: email});
-      setLoading(false);
+      setLoginPending(false);
     } catch (err) {
       setCheck(true);
-      setLoading(false);
+      setLoginPending(false);
     }
   };
 
@@ -161,7 +163,7 @@ const ForgotPasswordScreen = () => {
           </Pressable>
         </View>
       </ScrollView>
-      {loading ? <SearchLoader /> : null}
+      {/* {setLoginPending ? <SearchLoader /> : null} */}
     </>
   );
 };

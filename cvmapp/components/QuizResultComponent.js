@@ -35,10 +35,10 @@ const QuizResultComponent = ({data}) => {
     <Pressable
       onPress={onPress}
       style={{
-        marginVertical: 15,
-        marginHorizontal: 10,
+        marginVertical: 8,
+        marginHorizontal: 8,
         borderRadius: 11,
-        padding: 15,
+        padding: 13,
         backgroundColor: 'white',
         shadowColor: '#000000',
         shadowOffset: {
@@ -98,7 +98,9 @@ const QuizResultComponent = ({data}) => {
           }}>
           {data?.marksObtained}
         </Text>
-        <Text style={{fontFamily: 'Poppins-Regular'}}>Marks</Text>
+        <Text style={{fontFamily: 'Poppins-Regular', color: 'grey'}}>
+          Marks
+        </Text>
       </View>
       <View style={{flex: 1, alignItems: 'center'}}>
         <Feather name="chevron-right" color={'#353535'} size={35} />
