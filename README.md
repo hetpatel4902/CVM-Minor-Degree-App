@@ -22,6 +22,52 @@ This repository contains the **React Native Student Mobile Application**.
 
 ---
 
+## 📱 Application Screenshots
+
+The CVMU Minor Degree App provides students with a mobile interface for account management, Minor Degree choice filling, academic information, learning materials, results, and controlled online assessments.
+
+### 🔐 Authentication & Account Management
+
+| Login | Registration |
+| --- | --- |
+| <img src="screenshots/login.jpg" width="250"> | <img src="screenshots/register.jpg" width="250"> |
+
+| Email Verification | Forgot Password |
+| --- | --- |
+| <img src="screenshots/otp-verification.jpg" width="250"> | <img src="screenshots/forgot-password.jpg" width="250"> |
+
+| Reset Password |
+| --- |
+| <img src="screenshots/reset-password.jpg" width="250"> |
+
+### 🏠 Student Dashboard
+
+The home screen brings together announcements, Minor Degree choice filling, semester results, profile management, and other student actions.
+
+<img src="screenshots/home.jpg" width="250">
+
+### 🎓 Minor Degree Management
+
+Students can view the available Minor Degree subjects along with the offering department and available seats, then submit their choices based on priority.
+
+<img src="screenshots/choice-filling.jpg" width="250">
+
+### 📄 Academic Results
+
+Published semester results can be accessed directly through the application.
+
+<img src="screenshots/semester-result.jpg" width="250">
+
+### 📝 Controlled Online Quizzes
+
+The application provides online quizzes with multiple-choice questions and a controlled assessment environment. Students can view quiz rules before starting an assessment.
+
+| Quiz Rules | Quiz |
+| --- | --- |
+| <img src="screenshots/quiz-rules.jpg" width="250"> | <img src="screenshots/quiz.jpg" width="250"> |
+
+---
+
 ## 🎯 Problem Statement
 
 The Minor Degree enrollment process required students to submit their preferences for the subjects they wanted to study. After students submitted their choices, the Minor Degree administration had to manually sort students according to their priorities and allot subjects.
